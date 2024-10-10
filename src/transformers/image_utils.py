@@ -235,23 +235,6 @@ def infer_channel_dimension_format(
     num_channels = num_channels if num_channels is not None else (1, 3)
     num_channels = (num_channels,) if isinstance(num_channels, int) else num_channels
 
-    # This block aims to deal with the ambiguity of the channel dimension format with small images (e.g. 1x1 or Wx1) 
-    if image.ndim == 3:
-        if image.shape[-1] in num_channels:
-            return ChannelDimension.LAST
-        elif image.shape[0] in num_channels:
-            return ChannelDimension.FIRST
-        elif image.shape[-1] == 3:  # Assume RGB images are always channels last
-            return ChannelDimension.LAST
-    elif image.ndim == 4:
-        if image.shape[-1] in num_channels:
-            return ChannelDimension.LAST
-        elif image.shape[1] in num_channels:
-            return ChannelDimension.FIRST
-        elif image.shape[-1] == 3:  # Assume RGB images are always channels last
-            return ChannelDimension.LAST
-    
-    # If we can't determine the format unambiguously, we'll use the original logic
     if image.ndim == 3:
         first_dim, last_dim = 0, 2
     elif image.ndim == 4:
